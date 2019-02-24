@@ -9,9 +9,53 @@ import {
   Header,
   Message,
   Segment,
-  Input, Menu
+  Input, Menu,Icon
 } from 'semantic-ui-react';
 
+
+
+class CardItem extends React.Component {
+    constructor(props) {
+      super(props);
+      this.state = {
+          showPrice:false
+      };
+    }
+    render() {
+      return (
+          <Card>
+              <Card.Content header={this.props.name} />
+              <Card.Content description={this.props.description} />
+              <Card.Content extra>
+                <Icon name='money bill alternate' />
+                {this.props.price}
+              </Card.Content>
+            </Card>
+      );
+    }
+}
+
+class CardGroup extends React.Component {
+    constructor(props) {
+      super(props);
+    }
+    render() {
+        var Children;
+        if (this.props.selectedCategory){
+            Children = this.props.selectedCategory.map((child) =>
+             <CardItem name={child.name} description={child.description} price={child.price}/>
+         );
+        }
+
+      return (
+          <div>
+          <Card.Group>
+            {Children}
+            </Card.Group>
+          </div>
+      );
+    }
+}
 
 class MainMenu extends React.Component {
   constructor(props) {
@@ -100,25 +144,16 @@ class MainMenu extends React.Component {
     };
   }
 
-  RenderedContent = ({ tabName }) => {
-    if (tabName === 'home') {
-        return <div>This is the home page</div>
-    }
-    if (tabName === 'about') {
-        return <div>This is the about page</div>
-    }
-    }
-
-
   handleItemClick = (e, { name }) => {
       this.setState({ activeItem: name })
       this.state.menu.forEach(element => {
           if (name === element.name) {
-              console.log(element)
               this.setState({ selectedCategory: element.items })
           }
       });
   }
+
+
 
   render() {
     const { activeItem } = this.state
@@ -140,7 +175,7 @@ class MainMenu extends React.Component {
               </Menu.Item>
             </Menu.Menu>
           </Menu>
-          <Card.Group items={this.state.selectedCategory} />
+          <CardGroup selectedCategory={this.state.selectedCategory}/>
         </div>
     );
   }
